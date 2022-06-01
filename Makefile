@@ -33,7 +33,7 @@ all: $(SOURCE_CPP)
 clean: 
 	$(RM) -f *.o
 debug: debug.o
-	$(GDB) $<
+	$(GDB) --args $< a.out
 test:
 	$(PY) $(TEST_PATH)
 
