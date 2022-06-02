@@ -37,6 +37,8 @@ debug: debug.o
 test:
 	$(PY) $(TEST_PATH)
 
+file_search.o:
+	$(CPP) $(GPP_FLAGS) -o $@ $(SOURCE_CPP_LIB)
 
 debug.o:
 	$(CPP) $(GDB_FLAGS) -o $@ $(SOURCE_CPP)
