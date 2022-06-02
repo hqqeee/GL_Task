@@ -6,6 +6,6 @@
 #include <thread>
 #include <vector>
 
-void file_search(std::filesystem::path const & init, std::filesystem::path const & name, bool & found_flag);
+void thread_file_search(std::filesystem::path const & name, size_t amount_thread);
 
 #endif

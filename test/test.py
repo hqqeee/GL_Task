@@ -13,7 +13,7 @@ file_name = os.path.split(init_path)[1]
 print("File name to search: " + file_name)
 
 import time
-prog_call ="/home/ruslan/Cplusplus/GL_Test/dir_test.o '%s'" % file_name
+prog_call ="/home/ruslan/Cplusplus/GL_Test/output '%s'" % file_name
 start = time.time()
 output = os.popen(prog_call).read() 
 end = time.time()

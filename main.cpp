@@ -12,7 +12,6 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 	fs::path name {argv[1]};
-	bool found_flag = false;
-	file_search("/home/ruslan/", name, std::ref(found_flag)); 
+	thread_file_search(name, 8);
 	return 0;
 }
