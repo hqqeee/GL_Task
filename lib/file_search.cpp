@@ -2,54 +2,45 @@
 
 namespace fs = std::filesystem;
 
-static void file_search(fs::path const & init, fs::path const & name, bool & found_flag, std::vector<bool>::reference thread_flag);
+static void file_search(fs::path const & init, fs::path const & name, bool & found_flag);
 
+/*
+ *		thread_file_search creates $(amount_threads) threads that call file_search function which search file with $(name). 
+ */
 void thread_file_search(fs::path const & name, size_t amount_thread)
 {
 	using namespace std;
 	vector<thread> thr;
-	vector<bool> thr_status;
-	bool found_flag = false;
-	for(auto const & subroot : fs::directory_iterator(fs::path{"/"}))
+	bool found_flag = false; // Flag that indicates if the file is found
+	auto iter = fs::directory_iterator(fs::path{"/"}, fs::directory_options::skip_permission_denied);
+	for(auto i = fs::begin(iter); fs::begin(i) != fs::end(iter);)
 	{
-		if(subroot.path() == "/run" || subroot.path() == "/tmp") continue;
-		if(thr.size() < amount_thread)
+		auto subroot = *(i++);
+		bool last_dir = (fs::begin(i) == fs::end(iter));
+		// skip_dir: boolean that indicates dir which we need to skip. These dirs can cause filesystem errors, like "too many level of symbolic links" etc.
+		bool skip_dir = (subroot.path() == "/run" || subroot.path() == "/tmp" || subroot.path() == "/proc" || subroot.path() == "/snap" || subroot.path() == "/root" || subroot.path() == "/sys");
+		if(found_flag) break;
+		if(thr.size() < amount_thread && !skip_dir)
 		{
-			cout << "Thread number: " << thr.size() << " created " << endl;
-			thr_status.emplace_back(true);
-			thr.emplace_back(file_search, subroot, name, ref(found_flag), thr_status.back());
+		//	cout << "Thread created" << thr.size() << "    " << subroot.path()  << endl;
+			thr.emplace_back(file_search, subroot, name, ref(found_flag));
 		}
-		else
-		{
-		
-			for(auto &t : thr)
+		if(thr.size() == amount_thread || last_dir)
+		{	
+			for(auto &t : thr) // wait until all threads are done.
 			{
 				t.join();
+			//	cout << "finished " << endl;
 			}
-		/*
-		while(1)
-		{
-			for(size_t i = 0; i < amount_thread; i++)
-				{
-					if(!thr_status[i])
-					{
-						cout << "HERE";
-						thr[i].join();
-						break;
-					}
-				}
-		}*/
+			thr.clear();
 		}
-		}
+	}
 }
 
-static void file_search(fs::path const & init, fs::path const & name, bool & found_flag);
-
-static void file_search(fs::path const & init, fs::path const & name, bool & found_flag, std::vector<bool>::reference thread_flag)
-{
-	file_search(init, name, std::ref(found_flag));
-	thread_flag = false;
-}
+/*
+ *	Recursive file search algorithm. args: init - initial path, name - filename to search, found_flag - indicates if the file was found.
+ *  If file was found its print it.
+ */
 
 static void file_search(fs::path const & init, fs::path const & name, bool & found_flag)
 {
@@ -59,7 +50,7 @@ static void file_search(fs::path const & init, fs::path const & name, bool & fou
 		{
 			if(fs::is_directory(subdir.status()))
 			{
-				std::cout << "Searching in " << subdir << std::endl;
+	//			std::cout << "Searching in " << subdir << std::endl;
 				file_search(subdir, name, std::ref(found_flag));
 				if(found_flag)
 				{
@@ -71,6 +62,7 @@ static void file_search(fs::path const & init, fs::path const & name, bool & fou
 				auto filename{subdir.path().filename()};
 				if(filename == name)
 				{
+
 					std::cout << fs::absolute(subdir.path()).c_str() << std::endl;
 					found_flag = true;
 				}

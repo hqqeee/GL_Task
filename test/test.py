@@ -1,9 +1,9 @@
 import os, random, os.path
 from os import path
 #end_point = int(input("Enter number of iteration: "))
-init_path = "/home/ruslan/"
+#init_path = "/home/ruslan/"
 end_point = 20
-#init_path = "/"
+init_path = "/"
 i = 0
 while os.path.isdir(init_path) or i >= end_point:
 	init_path = init_path + random.choice(os.listdir(init_path)) + "/"
@@ -13,7 +13,7 @@ file_name = os.path.split(init_path)[1]
 print("File name to search: " + file_name)
 
 import time
-prog_call ="/home/ruslan/Cplusplus/GL_Test/output '%s'" % file_name
+prog_call ="./output.out '%s'" % file_name
 start = time.time()
 output = os.popen(prog_call).read() 
 end = time.time()

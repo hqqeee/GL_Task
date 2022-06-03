@@ -30,18 +30,20 @@ GDB_FLAGS = $(GPP_FLAGS) -g -ggdb
 .PHONY: all clean debug test lib 
 
 all: $(SOURCE_CPP:.c=.o)
-	$(CPP) -o $(PROJECT_NAME) $^ -L. lib/*.a
+	$(CPP) -o $(PROJECT_NAME).out $^ -L. lib/*.a
 clean: 
-	$(RM) -f *.o lib/*.o lib/*.a
-debug: debug.out
+	$(RM) -f *.o lib/*.o lib/*.a *.out
+debug: dbg.out
 	$(GDB) --args $< a.out
 test:
 	$(PY) $(TEST_PATH)
 
 lib: $(patsubst %.cpp, %.a, $(SOURCE_CPP_LIB))
 
-debug.out:
-	$(CPP) $(GDB_FLAGS) -o $@ $(SOURCE_CPP)
+debug.o: 
+	$(CPP) $(GDB_FLAGS) -c -o $@ $(SOURCE_CPP)
+dbg.out: debug.o
+	$(CPP) -o $@ $^ -L. lib/*.a
 
 %.a: %.o
 	$(AR) $@ $^
