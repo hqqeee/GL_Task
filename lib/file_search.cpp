@@ -17,8 +17,10 @@ void thread_file_search(fs::path const & name, size_t amount_thread)
 	{
 		auto subroot = *(i++);
 		bool last_dir = (fs::begin(i) == fs::end(iter));
-		// skip_dir: boolean that indicates dir which we need to skip. These dirs can cause filesystem errors, like "too many level of symbolic links" etc.
-		bool skip_dir = (subroot.path() == "/run" || subroot.path() == "/tmp" || subroot.path() == "/proc" || subroot.path() == "/snap" || subroot.path() == "/root" || subroot.path() == "/sys");
+		// skip_dir: boolean that indicates dir which we need to skip. These dirs can cause filesystem errors, 
+		// like "too many level of symbolic links" etc.
+		bool skip_dir = (subroot.path() == "/run" || subroot.path() == "/tmp" || subroot.path() == "/proc" || subroot.path() == "/snap" 
+				 || subroot.path() == "/root" || subroot.path() == "/sys");
 		if(found_flag) break;
 		if(thr.size() < amount_thread && !skip_dir)
 		{
