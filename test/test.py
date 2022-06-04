@@ -18,7 +18,7 @@ start = time.time()
 output = os.popen(prog_call).read() 
 end = time.time()
 print("Execution time is '%f'"  %(end - start))
-print("Expectede: " + init_path + "\nActual: " + output)
+print("Expected: " + init_path + "\nActual: " + output)
 if init_path in output + '\n':
 	print("Test passed")
 else:
