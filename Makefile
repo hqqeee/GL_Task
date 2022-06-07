@@ -29,10 +29,10 @@ GDB_FLAGS = $(GPP_FLAGS) -g -ggdb
 
 .PHONY: all clean debug test lib 
 
-all: $(SOURCE_CPP:.c=.o)
+all: $(patsubst %.cpp, %.o, $(SOURCE_CPP))
 	$(CPP) -o $(PROJECT_NAME).out $^ -L. lib/*.a
 clean: 
-	$(RM) -f *.o lib/*.o lib/*.a *.out
+	$(RM) -f *.o lib/*.o lib/*.a *.out ==
 debug: dbg.out
 	$(GDB) --args $< a.out
 test:
